@@ -24,7 +24,8 @@ class PostController extends Controller
         ],200);
     }
     public function show($id){
-        $post = Post::find($id)->load('category');
+        $post = Post::find($id)->load('category')
+                                ->load('user');
         if(is_object($post)){
             $data = [
                 'code'=>200,

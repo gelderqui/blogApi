@@ -32,9 +32,10 @@ class JwtAuth{
                 'email'     => $user->email,
                 'name'      => $user->name,
                 'surname'   => $user->surname,
+                'description'=> $user->description,
+                'image'     => $user->image,
                 'iat'       => time(),
-                'exp'       => time()+(7*24*60*60),//Fecha en que caducara el token
-                'description'=>$user->description
+                'exp'       => time()+(7*24*60*60)//Fecha en que caducara el token
             );
 
             $jwt = JWT::encode($token, $this->key,'HS256');//Key es una clave unica dentro del backend

@@ -11,7 +11,7 @@ class CategoryController extends Controller
   //se comento para que no pida autenticacion
   //Ver estos permisos para que el bot funcione correctamente
     public function __construct(){
-        $this->middleware('api.auth',['except'=>['index','show','store']]);
+        $this->middleware('api.auth',['except'=>['index','show']]);
     }
 
     public function index(){
@@ -45,8 +45,9 @@ class CategoryController extends Controller
         //Recoger los datos por post
         
         //Recibir parametros con x-www
-        $json = $request->input('chat',null);
-        $params_array = json_decode($json);
+        $json = $request->input('json',null);
+                $params_array = json_decode($json,true);
+        //$params_array = json_decode($json);
 
         //dd es para parar y mostrar
         //dd($json);
@@ -59,7 +60,7 @@ class CategoryController extends Controller
 
             //Validar datos
             $validate = \Validator::make($params_array, [
-                'nname'=>'required'
+                'name'=>'required'
             ]);
 
             //Guardar categoria
@@ -71,12 +72,12 @@ class CategoryController extends Controller
                 ];
             }else{
                 $category = new Category();
-                $category->name = $params_array['nname'];
+                $category->name = $params_array['name'];
                 $category->save();
                 $data = [
                     'code'=>200,
                     'status'=>'success',
-                    'chat'=> $category
+                    'category'=> $category
                 ];
             }
         }else{
