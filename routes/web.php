@@ -43,10 +43,7 @@ Route::get('/api/user/detail/{id}','UserController@detail');
 //Rutas protegidas en el controlador donde cargo el contructor del middleware
 //Las rutas resource crean automaticamente rutas predefinidas(php artisan route:list)
 Route::resource('api/category','CategoryController');
-//Ruta extra show
-Route::get('api/category/show1/{id}','CategoryController@show1');
 Route::post('api/category/store2','CategoryController@store2');
-Route::put('api/category/update2/{id}','CategoryController@update2');
 //! fin rutas de category/
 
 Route::resource('api/post','PostController');
