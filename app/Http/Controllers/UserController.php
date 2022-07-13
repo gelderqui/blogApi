@@ -8,14 +8,17 @@ Use App\User;
 
 class UserController extends Controller
 {
+
     public function pruebas(Request $request){
         return "accion de pruebas de user controller";
     }
 
     public function register(Request $request){
-        //Recoger datos
+        //Recoger datos de mi variable json si no viene el parametro que sea null la variable
         $json = $request->input('json',null);
-        $params = json_decode($json);               //objeto
+
+        //Puedo usar cualquiera de los dos para acceder a los datos recibidos
+        $params = json_decode($json);               //objeto para php ej($params->name)
         $params_array = json_decode($json, true);   //array
 
         if(!empty($params) && !empty($params_array)){
@@ -30,7 +33,7 @@ class UserController extends Controller
                 'email'=> 'required|email|unique:users',//Comprobar si el usuario ya existe(duplicado)
                 'password'=> 'required',
             ]);
-            
+
             if($validate->fails()){
                 //La validacion ha fallado
                 $data=array(
@@ -39,12 +42,11 @@ class UserController extends Controller
                     'message' => 'El usuario no se ha creado',
                     'erros'=> $validate->errors()
                 );
-                
-            }else{
+            }
+            else{
                 //Validacion pasada correctamente
-
-                //Cifrar contrase;a
-               // $pwd = password_hash($params->password, PASSWORD_BCRYPT, ['cost'=>11]); //cost son las veces que se cifra
+                //Cifrar contraseña
+                //$pwd = password_hash($params->password, PASSWORD_BCRYPT, ['cost'=>11]); //cost son las veces que se cifra
                 $pwd = hash('sha256',$params->password);
                 //Crear el usuario
                 $user = new User();
@@ -69,6 +71,8 @@ class UserController extends Controller
                 'message' => 'Los datos enviados no son correctos'
             );
         }
+
+        //Convierte un array en json
         return response()->json($data, $data['code']);
     }
 
@@ -90,7 +94,7 @@ class UserController extends Controller
             'email'=> 'required|email',
             'password'=> 'required'
         ]);
-        
+
         if($validate->fails()){
             //La validacion ha fallado
             $signup = array(
@@ -112,19 +116,19 @@ class UserController extends Controller
         }
         return response()->json($signup,200);
     }
+
     public function update(Request $request){
         //Comprobar si esta identificado
+        //Recibo el header
         $token = $request->header('Authorization');
         $jwtAuth = new \JwtAuth();
         $checkToken = $jwtAuth->checkToken($token);
-        $json=$request->input('json',null);
+        $json = $request->input('json',null);
         $params_array = json_decode($json,true);
 
         if($checkToken && !empty($params_array)){
             //Actualizar usuario
             //Recoger datos del post
-
-
             //Sacar uduario identificado
             $user = $jwtAuth->checkToken($token,true);
             //Validar datos
@@ -149,16 +153,17 @@ class UserController extends Controller
                     'user' => $user,
                     'changes'=>$params_array
                 );
-            
+
         }else{
             $data=array(
                 'status' => 'error',
                 'code' => 400,
-                'message' => 'El usuario no esta identificado',
+                'message' => 'El usuario no esta identificado-',
             );
         }
         return response()->json($data,$data['code']);
     }
+
     public function upload(Request $request){
         //Recoger los datos de la peticion
         $image = $request->file('file0');
@@ -175,24 +180,22 @@ class UserController extends Controller
                 'code' => 400,
                 'message' => 'Error al subir imagen',
             );
-            
-        }else{
+        }
+        else{
             $image_name=time().$image->getClientOriginalName();
             \Storage::disk('users')->put($image_name,\File::get($image));
-            
+
             $data=array(
                 'code' => 200,
                 'status' => 'succsess',
                 'image' => $image_name
             );
- 
         }
 
         return response()->json($data, $data['code']);//->header('Content-Type','text/plain');
     }
-    
-    public function getImage($filename){
 
+    public function getImage($filename){
         //Probar si existe la imagen
         $isset = \Storage::disk('users')->exists($filename);
         if($isset){
@@ -206,8 +209,8 @@ class UserController extends Controller
             );
             return response()->json($data, $data['code']);
         }
-
     }
+
     public function detail($id){
         $user= User::find($id);
 

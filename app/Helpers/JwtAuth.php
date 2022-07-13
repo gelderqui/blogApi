@@ -25,6 +25,7 @@ class JwtAuth{
         if(is_object($user)){
             $signup = true;
         }
+
         //Generar el token con los datos del usuario identificado
         if($signup){//Comprovar si signup es true
             $token = array(
@@ -40,10 +41,12 @@ class JwtAuth{
 
             $jwt = JWT::encode($token, $this->key,'HS256');//Key es una clave unica dentro del backend
             $decoded = JWT::decode($jwt,$this->key, ['HS256']);
-        //Devolver los datos decodificados o el token, en funcion de un parametro
+
+            //Devolver los datos decodificados del token o generar token, en funcion de un parametro getToken
             if(is_null($getToken)){
                 $data = $jwt;
-            }else{
+            }
+            else{
                 $data = $decoded;
             }
 
@@ -55,12 +58,12 @@ class JwtAuth{
         }
         return $data;
     }
-    public function checkToken($jwt, $getIdentity=false)
-    {
+
+    public function checkToken($jwt, $getIdentity=false){
         $auth=false;
         try{
             $jwt = str_replace('"','',$jwt);
-            $decoded=JWT::decode($jwt,$this->key,['HS256']);
+            $decoded = JWT::decode($jwt,$this->key, ['HS256']);
 
         }catch(\UnexpectedValueException $e){
             $auth=false;
@@ -70,7 +73,8 @@ class JwtAuth{
 
         if(!empty($decoded)&& is_object($decoded) && isset($decoded->sub)){
             $auth = true;
-        }else{
+        }
+        else{
             $auth=false;
         }
 

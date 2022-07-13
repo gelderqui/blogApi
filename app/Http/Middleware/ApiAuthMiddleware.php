@@ -21,8 +21,8 @@ class ApiAuthMiddleware
         $checkToken = $jwtAuth->checkToken($token);
         if($checkToken){
             return $next($request);
-        
-        }else{
+        }
+        else{
             $data=array(
                 'status' => 'error',
                 'code' => 400,
@@ -30,7 +30,5 @@ class ApiAuthMiddleware
             );
             return response()->json($data,$data['code']);
         }
-
-        
     }
 }

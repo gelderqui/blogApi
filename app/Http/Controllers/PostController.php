@@ -143,7 +143,7 @@ class PostController extends Controller
                 'id'=>$id,
                 'user_id'=>$user->sub
             ];
-            
+
             $post = Post::updateOrCreate($where,$params_array);
             //Devolver algo
             $data = array(
@@ -152,7 +152,6 @@ class PostController extends Controller
                 'post'=> $post,
                 'changes'=> $params_array
             );
-            
         }
         //Devolver Resultado
         return response()->json($data, $data['code']);
@@ -165,7 +164,7 @@ class PostController extends Controller
         $post = Post::where('id',$id)
         ->where('user_id',$user->sub)
         ->first();
-        
+
         if(!empty($post)){
         //Borrar
         $post->delete();
@@ -231,7 +230,7 @@ class PostController extends Controller
         if($isset){
             //Conseguir la imagen
             $file = \Storage::disk('images')->get($filename);
-            
+
             //Devolver la imagen
             return new Response($file, 200);
         }else{
@@ -256,7 +255,7 @@ class PostController extends Controller
 
     public function getPostsByUser($id){
         $posts=Post::where('user_id',$id)->get();
-        
+
         return response()->json([
             'status'=>'success',
             'posts'=>$posts
